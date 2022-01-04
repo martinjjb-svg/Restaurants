@@ -1,35 +1,118 @@
-from flask import Flask, request, jsonify, make_response
-import json
-import service
+from flask import Flask, render_template
+from dbconn import mycursor
+
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return "This is the index page for The B Best Restaurant Guide"
+    return render_template("index.html")
 
 
-@app.route("/restaurant", methods=['POST', 'GET', 'PUT'])
-def restaurants():
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
-    if request.method == 'GET':
-        type = request.json["type"]
-        info = request.json["info"]
 
-        if type == "name":
-            return service.get_restaurant_by_name(info)
+@app.route("/location")
+def location():
+    return render_template("location.html")
 
-        if type == "address":
-            return service.get_restaurant_by_address(info)
 
-        if type == "nationality":
-            return service.get_restaurant_by_nationality(info)
+@app.route("/favourites")
+def favourites():
+    return render_template("favourites.html")
 
-    if request.method == 'POST':
-        name = request.json["name"]  # creates name equal to the value input next to the title key in json
-        address = request.json["address"]
-        nationality = request.json["nationality"]
-        return service.add_restaurant(name, address, nationality)
+
+@app.route("/restaurant")
+def restaurant():
+    mycursor.execute("SELECT * FROM restaurants")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='restaurant')
+
+
+@app.route("/european")
+def european():
+    mycursor.execute("SELECT * FROM restaurants WHERE nationality='European'")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='European')
+
+
+@app.route("/asian")
+def asian():
+    mycursor.execute("SELECT * FROM restaurants WHERE nationality='Asian'")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='Asian')
+
+
+@app.route("/rating")
+def rating():
+    mycursor.execute("SELECT * FROM restaurants ORDER By rating desc")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='Rating')
+
+
+@app.route("/london")
+def london():
+    mycursor.execute("SELECT * FROM restaurants WHERE address LIKE '%London%'")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='London')
+
+
+@app.route("/albans")
+def albans():
+    mycursor.execute("SELECT * FROM restaurants WHERE address LIKE '%Albans%'")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='Albans')
+
+
+@app.route("/nerja")
+def nerja():
+    mycursor.execute("SELECT * FROM restaurants WHERE address LIKE '%Nerja%'")
+    value = mycursor.fetchall()
+    return render_template("restaurants.html", data=value, name='Nerja')
+
+
+@app.route("/all")
+def all():
+    mycursor.execute("SELECT * FROM users")
+    value = mycursor.fetchall()
+    return render_template("users.html", data=value, name='All')
+
+
+@app.route("/martin")
+def martin():
+    mycursor.execute("SELECT * FROM users WHERE name='Martin'")
+    value = mycursor.fetchall()
+    return render_template("users.html", data=value, name='Martin')
+
+
+@app.route("/karen")
+def karen():
+    mycursor.execute("SELECT * FROM users WHERE name='Karen'")
+    value = mycursor.fetchall()
+    return render_template("users.html", data=value, name='Karen')
+
+
+@app.route("/jordan")
+def jordan():
+    mycursor.execute("SELECT * FROM users WHERE name='Jordan'")
+    value = mycursor.fetchall()
+    return render_template("users.html", data=value, name='Jordan')
+
+
+@app.route("/hannah")
+def hannah():
+    mycursor.execute("SELECT * FROM users WHERE name='Hannah'")
+    value = mycursor.fetchall()
+    return render_template("users.html", data=value, name='Hannah')
+
+
+@app.route("/rose")
+def rose():
+    mycursor.execute("SELECT * FROM users WHERE name='Rose'")
+    value = mycursor.fetchall()
+    return render_template("users.html", data=value, name='Rose')
 
 
 if __name__ == '__main__':
